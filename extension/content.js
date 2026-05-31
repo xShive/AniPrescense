@@ -1,3 +1,4 @@
+// ========== Functions ==========
 function scrapeData() {
     let titleElement = document.querySelector(".ep-title");
     let numberElement = document.querySelector(".ep-number")
@@ -29,3 +30,33 @@ function scrapeData() {
     };
 }
 
+async function sendData(data) {
+    try {
+        await fetch(`${PI_URL}/watching`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(data)
+        });
+        console.log("Sent:", data);
+    } catch (error) {
+        console.log("Failed to send:", error);
+    }
+}
+
+
+// ========== Main ==========
+let data = scrapeData();
+if (data) sendData(data);
+
+setInterval(function() {
+    let data = scrapeData();
+    if (data) sendData(data);
+}, 15000);
+
+window.addEventListener("beforeunload", function() {
+    fetch(`${PI_URL}/stopped`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({})
+    });
+});

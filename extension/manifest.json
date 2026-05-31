@@ -17,7 +17,7 @@
     "content_scripts": [
     {
         "matches": ["https://www.miruro.tv/watch/*"],
-        "js": ["content.js"]
+        "js": ["config.js", "content.js"]
     }
     ]
 }
