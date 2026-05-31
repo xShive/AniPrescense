@@ -1,0 +1,23 @@
+{
+    "manifest_version": 3,
+    "name": "Anime Activity Tracker",
+    "version": "1.0",
+    "description": "Shows what anime you're watching on Discord",
+
+    "permissions": [
+        "activeTab",
+        "scripting"
+    ],
+
+    "host_permissions": [
+        "https://www.miruro.tv/*",
+        "http://10.10.10.183:5000/*"
+    ],
+
+    "content_scripts": [
+    {
+        "matches": ["https://www.miruro.tv/watch/*"],
+        "js": ["config.js", "content.js"]
+    }
+    ]
+}
