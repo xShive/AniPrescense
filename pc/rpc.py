@@ -29,7 +29,8 @@ watch_start = None
 def update():
     data = request.get_json()
 
-    title = data.get('title', '')
+    anime_title = data.get('anime_title', '')
+    episode_title = data.get('episode_title', '')
     episode = data.get('episode', '').replace('.', '').strip()
     episode_line = f"EP {episode}" if episode else ""
     cover = data.get('cover', '') or None
@@ -37,11 +38,12 @@ def update():
     duration = data.get('duration', '0:00')
     paused = data.get('paused', False)
 
+    anime_title_and_number = f"{anime_title} - {episode_line}"
+
     if paused:
         rpc.clear()
-        time.sleep(0.5)
         rpc.update(
-            details=title,
+            details=anime_title_and_number,
             state="⏸ Paused",
             large_image=cover,
         )
@@ -50,13 +52,13 @@ def update():
         end_timestamp = int(time.time()) + seconds_remaining
 
         rpc.update(
-            details=title,
-            state=episode_line,
+            details=anime_title_and_number,
+            state=episode_title,
             large_image=cover,
             end=end_timestamp
         )
 
-    print(f"Updated: {title} - {episode_line} - paused={paused}")
+    print(f"Updated: {episode_title} - {episode_line} - paused={paused}")
     return jsonify({ "status": "ok" })
 
 @app.route('/clear', methods=['POST'])

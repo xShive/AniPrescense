@@ -1,5 +1,6 @@
 // ========== Functions ==========
 function scrapeData() {
+    let animeTitleElement = document.querySelector(".anime-title");
     let titleElement = document.querySelector(".ep-title");
     let numberElement = document.querySelector(".ep-number")
     let timestampElements = document.getElementsByClassName("vds-time"); 
@@ -21,7 +22,8 @@ function scrapeData() {
     
 
     return {
-        title: raw_title,
+        anime_title: animeTitleElement ? animeTitleElement.textContent.trim() : "",
+        episode_title: raw_title,
         episode: numberElement ? numberElement.textContent.trim() : "",
         current_time: timestampElements[0].textContent,
         duration: timestampElements[1].textContent,
