@@ -11,10 +11,9 @@ Automatically streams whatever anime you're watching directly onto your Discord 
 </p>
 
 <p align="center">
-  <video width="800" autoplay loop muted playsinline>
-    <source src="assets/demo.mp4" type="video/mp4">
-  </video>
+  <video src="assets/demo.mp4" width="480" height="270" controls></video>
 </p>
+
 
 ## Requirements
 
