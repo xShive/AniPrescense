@@ -1,5 +1,11 @@
 # Anime Activity Tracker for Discord
 
+<p align="center">
+  <img src="https://img.shields.io/github/license/xShive/Anime-Activity-Tracker?style=flat-square" alt="License">
+  <img src="https://img.shields.io/github/v/release/xShive/Anime-Activity-Tracker?style=flat-square" alt="Version">
+  <img src="https://img.shields.io/github/downloads/YxShive/Anime-Activity-Tracker/total?style=flat-square" alt="Downloads">
+</p>
+
 Automatically streams whatever anime you're watching directly onto your Discord profile as a Rick Presence Card (RPC), complete with a time-remaining tracker, paused states, anime-title detecion and episode-title detection.
 
 
@@ -14,7 +20,7 @@ Before installing, make sure you have the following installed on your machine:
 ## Installation & Setup
 
 ### Part 1: Install the Tracker
-1. Download the latest ```AnimeTracker_Setup.exe``` from the [Releasees Page](https://github.com/xShive/Anime-Activity-Tracker/releases).
+1. Download the latest ```AnimeTracker_Setup.exe``` from the [Releases Page](https://github.com/xShive/Anime-Activity-Tracker/releases).
 2. Run the installer and follow the on-screen instructions.
 3. Once the installation finishes, an **installation folder** will automatically open on your screen. Keep this window open.
   
