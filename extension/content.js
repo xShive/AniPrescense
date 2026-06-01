@@ -44,8 +44,12 @@ async function sendData(data) {
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(data)
         });
-    } catch (error) {}
+        console.log("Sent:", data);
+    } catch (error) {
+        console.log("Failed to send:", error)
+    }
 }
+
 
 function sendStop() {
     fetch(`${LOCAL_URL}/stopped`, { method: "POST" });
