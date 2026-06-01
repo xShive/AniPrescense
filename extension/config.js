@@ -1,1 +1,1 @@
-const PI_URL = "http://10.0.10.183:5000"
+const LOCAL_URL = "http://127.0.0.1:5001"

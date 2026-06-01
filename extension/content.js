@@ -1,26 +1,25 @@
+// ========== State ==========
+let isWatching = false;
+
 // ========== Functions ==========
 function scrapeData() {
+    if (!window.location.href.includes("/watch")) return null;
+
     let animeTitleElement = document.querySelector(".anime-title");
     let titleElement = document.querySelector(".ep-title");
-    let numberElement = document.querySelector(".ep-number")
+    let numberElement = document.querySelector(".ep-number");
     let timestampElements = document.getElementsByClassName("vds-time"); 
-    let imageElement = document.querySelector("img[style*='view-transition-name: poster']")
+    let imageElement = document.querySelector("img[style*='view-transition-name: poster']");
     let videoElement = document.querySelector("video");
 
-    if (!titleElement || !timestampElements || !imageElement || !videoElement) {
-        return null
+    if (!titleElement || !timestampElements || timestampElements.length < 2 || !imageElement || !videoElement) {
+        return null;
     }
 
-    let raw_title;
-
-    if (titleElement.textContent.includes("· ")) {
-        let parts = titleElement.textContent.split("· ");
-        raw_title = parts[1].trim();
-    } else {
-        raw_title = titleElement.textContent.trim();
-    }
+    let raw_title = titleElement.textContent.includes("· ") 
+        ? titleElement.textContent.split("· ")[1].trim() 
+        : titleElement.textContent.trim();
     
-
     return {
         anime_title: animeTitleElement ? animeTitleElement.textContent.trim() : "",
         episode_title: raw_title,
@@ -34,31 +33,27 @@ function scrapeData() {
 
 async function sendData(data) {
     try {
-        await fetch(`${PI_URL}/watching`, {
+        await fetch(`${LOCAL_URL}/watching`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(data)
         });
-        console.log("Sent:", data);
-    } catch (error) {
-        console.log("Failed to send:", error);
-    }
+    } catch (error) {}
 }
 
+function sendStop() {
+    fetch(`${LOCAL_URL}/stopped`, { method: "POST" });
+}
 
-// ========== Main ==========
-let data = scrapeData();
-if (data) sendData(data);
-
+// ========== Main Loop ==========
 setInterval(function() {
     let data = scrapeData();
-    if (data) sendData(data);
+    
+    if (data) {
+        sendData(data);
+        isWatching = true;
+    } else if (isWatching) {
+        sendStop();
+        isWatching = false;
+    }
 }, 15000);
-
-window.addEventListener("beforeunload", function() {
-    fetch(`${PI_URL}/stopped`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({})
-    });
-});
