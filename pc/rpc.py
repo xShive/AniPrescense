@@ -1,5 +1,4 @@
 # ========== Imports ==========
-from dotenv import load_dotenv
 from pypresence.presence import Presence
 from flask import Flask, request, jsonify
 from flask_cors import CORS
@@ -8,9 +7,8 @@ import os
 import time
 import threading
 
-# ========== Environment Variable Setup ==========
-load_dotenv()
-APP_ID = os.getenv("APP_ID")
+# ========== APP ID ==========
+APP_ID="1510673753871352070"
 
 # ========== Connect RPC ==========
 rpc = Presence(APP_ID)
