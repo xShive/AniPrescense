@@ -1,8 +1,8 @@
 ---
 name: New website request
 about: Request support for a new website.
-title: ''
-labels: ''
+title: "[NEW-SITE] - "
+labels: site:request
 assignees: ''
 
 ---
