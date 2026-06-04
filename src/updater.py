@@ -41,4 +41,3 @@ def check_for_updates() -> Tuple[Optional[str], Optional[str]]:
         print(f"Failed to check for updates: {e}")
     
     return None, None
-    

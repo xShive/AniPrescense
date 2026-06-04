@@ -14,6 +14,7 @@ APP_ID="1510673753871352070"
 last_ping_time = time.time()
 is_presence_active = False
 is_paused_active = False
+rpc_connected = False
 
 # ========== Heartbeat Timeout Logic =========
 def timeout_monitor():
@@ -21,7 +22,7 @@ def timeout_monitor():
     Every 15 seconds content.js sends a /watching ping. last_ping_time records the time of the last ping.
     The timeout_monitor thread wakes up every 5 seconds to check if it has been more than 25 seconds.
     """
-    global last_ping_time, is_presence_active, is_paused_active
+    global last_ping_time, is_presence_active, is_paused_active, rpc_connected
     while True:
         time.sleep(5)
         
@@ -29,8 +30,11 @@ def timeout_monitor():
         if is_presence_active and (time.time() - last_ping_time > 25):
             print("Browser tab closed! Clearing Discord presence.")
             try:
-                rpc.clear()
+                if rpc_connected:   # check if youre not disconnected
+                    rpc.clear()
+
             except Exception as e:
+                rpc_connected = False
                 print(f"ERROR: {e}")
 
             is_presence_active = False
@@ -46,9 +50,19 @@ CORS(app)
 
 @app.route('/watching', methods=['POST'])
 def watching():
-    global last_ping_time, is_presence_active, is_paused_active
+    global last_ping_time, is_presence_active, is_paused_active, rpc_connected, rpc
     last_ping_time = time.time() # reset timer
     is_presence_active = True
+
+    if not rpc_connected:
+        try:
+            rpc = Presence(APP_ID)
+            rpc.connect()
+            rpc_connected = True
+            print("Successfully reconnected.")
+            
+        except Exception as e:
+            print(f"Reconnect failed: {e}")
 
     data = request.get_json()
 
@@ -92,8 +106,10 @@ def watching():
                 buttons=[{"label": "View on MAL", "url": mal_url}]
             )
         print(f"Updated: {episode_title} - {episode_line} - paused={paused}")
-    except:
-        pass
+
+    except Exception as e:
+        rpc_connected = False
+        print(f"Discord's RPC socket failed: {e}.\nA reconnect attempt will trigger shortly.")
 
     return jsonify({ "status": "ok" })
 
@@ -112,9 +128,15 @@ def stopped():
 # ========== Main ==========
 if __name__ == '__main__':
     # Connect RPC
-    rpc = Presence(APP_ID)
-    rpc.connect()
-    print("Successfully connected to Discord's RPC")
+    try:
+        rpc = Presence(APP_ID)
+        rpc.connect()
+        rpc_connected = True
+        print("Successfully connected to Discord's RPC")
+        
+    except Exception as e:
+        print(f"Initial Discord connection failed: {e}. Will retry on next browser update.")
+        rpc_connected = False
 
     # thread 1: flask server listens for HTTP requests on port 5001 (daemon) (daemon threads die when main thread exits)
     threading.Thread(target=lambda: app.run(host='127.0.0.1', port=5001), daemon=True).start() 
