@@ -6,6 +6,8 @@ const SITE = SITE_CONFIGS[currentHost];
 // ========== State ==========
 let isWatching = false;
 let kwikVideoData = null;
+
+// listens to background.js. if theres kwik video data, change variable -> scrapeData()
 chrome.runtime.onMessage.addListener((message) => {
     if (message.type === "video_data") {
         kwikVideoData = message;
