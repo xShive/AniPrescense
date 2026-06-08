@@ -1,5 +1,6 @@
 # ========== Imports ==========
 from pypresence.presence import Presence
+from pypresence.types import ActivityType
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from tray import create_tray
@@ -125,15 +126,18 @@ def watching():
         else:
             is_paused_active = False
             new_end_timestamp = int(time.time()) + seconds_remaining
+            start_timestamp = int(time.time()) - time_to_seconds(current_time)
 
             
             if current_end_timestamp is None or episode_changed or abs(current_end_timestamp - new_end_timestamp) > 3:
                 current_end_timestamp = new_end_timestamp
 
             rpc.update(
+                activity_type=ActivityType.LISTENING,
                 details=anime_title_and_number,
                 state=episode_title if episode_title else None,
                 large_image=cover,
+                start=start_timestamp,
                 end=current_end_timestamp,
                 buttons=[{"label": "View on MAL", "url": mal_url}]
             )
