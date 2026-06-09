@@ -17,6 +17,7 @@ last_ping_time = time.time()
 is_presence_active = False
 is_paused_active = False
 rpc_connected = False
+ghost_mode = False
 current_end_timestamp = None
 last_episode = None
 
@@ -50,11 +51,20 @@ def time_to_seconds(t: str) -> int:
     parts = t.split(':')
     return int(parts[0]) * 60 + int(parts[1]) if (len(parts) == 2) else int(parts[0]) * 3600 + int(parts[1]) * 60 + int(parts[2])
 
+# ========== Decorator ==========
+def not_ghost(func):
+    def wrapper():
+        if ghost_mode:
+            return jsonify({ "status": "ghost_mode" })
+        return func()
+    return wrapper
+
 # ========== Flask app - API endpoints ==========
 app = Flask(__name__)
 CORS(app) 
 
 @app.route('/watching', methods=['POST'])
+@not_ghost
 def watching():
     global last_ping_time, is_presence_active, is_paused_active, rpc_connected, rpc, current_title_and_number
     global current_end_timestamp, last_episode
@@ -175,6 +185,14 @@ def update():
 @app.route('/status', methods=['GET'])
 def status():
     return jsonify({"title_number": current_title_and_number or None, "is_watching": is_presence_active, "is_paused": is_paused_active})
+
+@app.route('/ghost', methods=['POST'])
+def toggle_ghost():
+    global ghost_mode
+    ghost_mode = not ghost_mode
+    if ghost_mode:
+        rpc.clear()
+    return jsonify({ "ghost_mode": ghost_mode })
 
 # ========== Main ==========
 if __name__ == '__main__':
