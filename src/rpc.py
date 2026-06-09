@@ -6,6 +6,7 @@ from flask_cors import CORS
 from tray import create_tray
 from mal import get_mal_url
 from updater import check_for_updates
+from helpers import time_to_seconds
 from functools import wraps
 
 import time
@@ -46,11 +47,6 @@ def timeout_monitor():
                 print(f"ERROR: {e}")
 
             is_presence_active = False
-
-# ========== Helper ==========
-def time_to_seconds(t: str) -> int:
-    parts = t.split(':')
-    return int(parts[0]) * 60 + int(parts[1]) if (len(parts) == 2) else int(parts[0]) * 3600 + int(parts[1]) * 60 + int(parts[2])
 
 # ========== Decorator ==========
 # if two endpoints use the decorator, both endpoints will be named wrapper (prevent)

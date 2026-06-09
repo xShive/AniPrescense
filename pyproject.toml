@@ -1,0 +1,8 @@
+# pytest config
+# pythonpath = ["src"] adds the src/ folder to the import path, so tests can do
+# `from helpers import ...` even though helpers.py lives in src/ and not the repo root
+# testpaths tells pytest where to look, so a `pytest` command finds them
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]
