@@ -1,12 +1,12 @@
 # AniPresence
 
 <p align="center">
-  <img src="https://img.shields.io/github/license/xShive/AniPrescense?style=flat-square" alt="License">
-  <img src="https://img.shields.io/github/v/release/xShive/AniPrescense?style=flat-square" alt="Version">
-  <img src="https://img.shields.io/github/downloads/xShive/AniPrescense/total?style=flat-square" alt="Downloads">
+  <img src="https://img.shields.io/github/license/xShive/AniPresence?style=flat-square" alt="License">
+  <img src="https://img.shields.io/github/v/release/xShive/AniPresence?style=flat-square" alt="Version">
+  <img src="https://img.shields.io/github/downloads/xShive/AniPresence/total?style=flat-square" alt="Downloads">
 </p>
 
-Automatically streams whatever anime you're watching directly onto your Discord profile as a Rich Presence Card (RPC), complete with a time-remaining tracker, paused states, anime-title detection, and episode-title detection.
+AniPresence is a lightweight hub for all your favorite anime and manga. Track your lists, sync your progress to MyAnimeList, and show what you're watching live on your Discord profile. It pairs an easy-to-use browser extension with a small app that runs locally on your machine.
 
 <div align="center">
   <a href="https://imgur.com/ry3eCfV">
@@ -18,24 +18,21 @@ Automatically streams whatever anime you're watching directly onto your Discord 
 
 ## Installation & Setup
 
-### Part 1: Install the Tracker
-1. Download the latest `AnimeTracker_Setup.exe` from the [Releases Page](https://github.com/xShive/AniPresence/releases).
+### Part 1: Install the app
+1. Download the latest `AniPresence_Setup.exe` from the [Releases Page](https://github.com/xShive/AniPresence/releases).
 2. Run the installer and follow the on-screen instructions.
-3. Once the installation finishes, an **installation folder** will automatically open on your screen. Copy its location, using the navigation bar at the top.
-  
-### Part 2: Loading the Browser Extension
-1. Open your browser's extension manager:
-   - Chrome/Brave/Edge: Type `chrome://extensions` in your address bar.
-   - Opera GX: Type `opera://extensions` in your address bar.
-2. In the top-right corner, toggle **Developer Mode to ON.**
-3. Click the **Load Unpacked** button that appears on the top-left.
-4. Navigate to the extension folder by pasting it at the top. Open the extension folder (it'll appear as empty).
+3. When it finishes, the installer opens the **`extension` folder** for you. Leave this window open: it's needed in Part 2.
 
-The extension is now active! Simply watch an anime on a supported site, and your Discord status will update automatically.
+### Part 2: Load the browser extension
+1. Open your browser's extension manager:
+   - Chrome / Brave / Edge: type `chrome://extensions` in the address bar.
+   - Opera GX: type `opera://extensions` in the address bar.
+2. Toggle **Developer Mode** to **ON** (top-right corner).
+3. Click **Load unpacked** (top-left).
+4. Select the **`extension` folder** that opened in Part 1. (default: `C:\Program Files (x86)\AniPresence\extension`)
 
 ## Supported Websites
 
-The tracker natively supports the following domains:
 - `crunchyroll.com`
 - `miruro.tv`, `miruro.bz`, `miruro.to`, `miruro.ru`
 - `animepahe.pw`
@@ -47,3 +44,6 @@ A: This is a standard Windows security feature for any custom application that h
 
 ### Q: How do I ensure this tool is safe to use?
 A: The source code of this project is publicly available, which you can use to verify its safety. The tracker runs entirely locally on your machine and only interacts with website data to scrape the current video status. It does not log anything else related to your browser.
+
+### Q: What about my MyAnimeList password?
+A: You sign in through MyAnimeList's own official login page, so AniPresence never sees or stores your password. It only keeps the access token MAL hands back, saved locally on your machine.
