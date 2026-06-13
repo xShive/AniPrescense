@@ -15,6 +15,16 @@ TOKEN_FILE = os.path.join(app_data_dir(), "mal_tokens.json")
 
 _code_verifier = None   # random secret, remembered between start_login and handle_callback
 
+# ========== Helper ==========
+def get_token() -> Optional[Any]:
+    try:
+        with open(TOKEN_FILE) as f:
+            return json.load(f)
+        
+    except Exception as e:
+        logger.error(f"Could not find token. `Check appdata/roaming/anipresence`\n{e}")
+        return
+
 # ========== Functions ==========
 def start_login() -> bool:
     """Open MAL's login page in the user's browser to begin logging in.
@@ -81,16 +91,19 @@ def get_my_info() -> Optional[dict[str, Any]]:
         Optional[dict[str, Any]]: the profile data, or None if it failed
     """
     try:
-        with open(TOKEN_FILE) as f:
-            tokens = json.load(f)
-
+        tokens = get_token()
+        if not tokens:
+            return None
+        
         response = requests.get(
             "https://api.myanimelist.net/v2/users/@me",
             headers={"Authorization": "Bearer " + tokens["access_token"]},
+            params={"fields": "anime_statistics"},
             timeout=10,
         )
         response.raise_for_status()
         return response.json()
+    
     except Exception as e:
         logger.error(f"Could not fetch MAL user info: {e}")
         return None
@@ -104,3 +117,58 @@ def logout() -> None:
     except FileNotFoundError:
         logger.warning("Unable to logout; can't find tokens.")
         pass
+
+def get_animelist():
+    """
+    STRUCTURE:
+    - data: list. each element is one anime.
+        -- each element has two parts:
+            1. node (the anime: id, title, picture)
+            2. list status (personal progress: scores, episodes)
+    - paging: pagination info. if there's a next URL, there are more entries beyond this page
+    mal doesnt include all the things directly so add to fields
+    """
+    try:
+        tokens = get_token()
+        if not tokens:
+            return None
+
+        response = requests.get(
+            "https://api.myanimelist.net/v2/users/@me/animelist",
+            headers={"Authorization": "Bearer " + tokens["access_token"]},
+            params={
+                "fields": "list_status,synopsis,rank,media_type,num_episodes,broadcast,mean",
+                "limit": 1000,
+            },
+            timeout=10,
+        )
+        response.raise_for_status()
+
+        raw = response.json()
+        anime = []
+
+        for item in raw["data"]:
+            node   = item["node"]
+            status = item["list_status"] 
+
+            anime.append({
+                "id":           node.get("id"),
+                "title":        node.get("title"),
+                "cover":        node.get("main_picture", {}).get("medium"),
+                "synopsis":     node.get("synopsis"),
+                "rank":         node.get("rank"),
+                "mean":         node.get("mean"),
+                "media_type":   node.get("media_type"),
+                "num_episodes": node.get("num_episodes"),
+                "broadcast":    node.get("broadcast"),
+
+                "status":       status.get("status"),
+                "score":        status.get("score"),
+                "watched":      status.get("num_watched_episodes"),
+            })
+
+        return anime
+
+    except Exception as e:
+        logger.error(f"Could not fetch MAL animelist: {e}")
+        return None

@@ -9,7 +9,7 @@ from updater import check_for_updates
 from helpers import time_to_seconds
 from functools import wraps
 from log_setup import setup_logging
-from mal_auth import start_login, handle_callback, get_my_info, logout
+from mal_auth import start_login, handle_callback, get_my_info, logout, get_animelist
 
 import time
 import threading
@@ -231,6 +231,10 @@ def mal_callback():
 @app.route("/mal/me", methods=['GET'])      # the extension should hit this when loading profile data
 def mal_me():
     return jsonify(get_my_info())
+
+@app.route("/mal/me/animelist")
+def mal_animelist():
+    return jsonify(get_animelist())
 
 # ========== Main ==========
 if __name__ == '__main__':
